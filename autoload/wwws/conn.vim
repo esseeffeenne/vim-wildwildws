@@ -27,11 +27,10 @@ func! wwws#conn#Open() " {{{
     call wwws#output#EnsureAvailable()
 
     if !s:isReady()
-        echo 'Not ready yet'
         return
     endif
 
-    if type(get(b:_wwws, 'job', 'no job')) == v:t_number
+    if type(get(b:_wwws, 'job', 'no job')) == (has('nvim') ? v:t_number : v:t_job)
         echo 'Already connected'
         return
     endif
@@ -61,7 +60,7 @@ func! wwws#conn#Open() " {{{
         call wwws#conn#Close()
     endfunc
 
-    let job = jobstart(cmd, {
+    let args = {
         \ 'out_mode': 'nl',
         \ 'out_modifiable': 0,
         \ 'out_io': 'buffer',
@@ -71,7 +70,8 @@ func! wwws#conn#Open() " {{{
         \ 'err_buf': outputBufNr,
         \ 'out_cb': 'OnOutput',
         \ 'exit_cb': 'OnExit',
-        \ })
+        \ }
+    let job = (has('nvim') ? jobstart(cmd, args) : job_start(cmd, args))
     let b:_wwws['job'] = job
 endfunc " }}}
 
@@ -79,11 +79,15 @@ func! wwws#conn#CloseFor(inputBufNr)
     " disconnect; leave the output buffer open
     let _wwws = getbufvar(a:inputBufNr, '_wwws', {})
     let job = get(_wwws, 'job', 'no job')
-    if type(job) != v:t_number
+    if type(job) != (has('nvim') ? v:t_number : v:t_job)
         return
     endif
 
-    call jobstop(job)
+    if has('nvim')
+	call jobstop(job)
+    else
+	call job_stop(job)
+    endif
     unlet _wwws['job']
 endfunc
 
@@ -103,12 +107,16 @@ func! wwws#conn#Send(message) " {{{
     call wwws#conn#TryConnect()
 
     let job = get(b:_wwws, 'job', 'no job')
-    if type(job) != v:t_number
+    if type(job) != (has('nvim') ? v:t_number : v:t_job)
         echo 'Not connected'
         return
     endif
 
-    call chansend(job, [ a:message, "\n" ])
+    if has('nvim')
+	call chansend(job, [ a:message, "\n" ])
+    else
+	call ch_sendraw(job, a:message . "\n")
+    endif
 endfunc " }}}
 
 func! wwws#conn#TryConnect() " {{{
@@ -121,7 +129,7 @@ func! wwws#conn#TryConnect() " {{{
         return
     endif
 
-    if type(get(b:_wwws, 'job', 'no job')) == v:t_number
+    if type(get(b:_wwws, 'job', 'no job')) == (has('nvim') ? v:t_number : v:t_job)
         " already connected
         return
     endif
