@@ -17,6 +17,11 @@ let b:wwws_init = 1
 command! -buffer -nargs=0 Connect :call wwws#conn#Open()
 command! -buffer -nargs=0 Disconnect :call wwws#conn#Close()
 command! -buffer -nargs=+ Send :call wwws#conn#Send(<q-args>)
+command! -buffer -nargs=0 SendLine :call wwws#buffer#SendLine()
+command! -buffer -nargs=0 SendDeleteParagraph :call wwws#buffer#SendDeleteParagraph()
+command! -buffer -nargs=0 SendHeadless :call wwws#buffer#SendHeadless()
+command! -buffer -nargs=0 SendDeleteHeadless :call wwws#buffer#SendDeleteHeadless()
+command! -buffer -nargs=0 TryConnect :call wwws#conn#TryConnect()
 
 
 " ======= Output window prep ===============================
@@ -37,6 +42,11 @@ if g:wwws_auto_connect
 endif
 
 if g:wwws_create_maps
-	nnoremap <buffer> <cr> :call wwws#buffer#SendParagraph()<cr>
-	nnoremap <buffer> <del> :call wwws#buffer#Close()<del>
+	nnoremap <buffer> <CR> :call wwws#buffer#SendParagraph()<CR>
+	nnoremap <buffer> <C-CR> :call wwws#buffer#SendLine()<CR>
+	nnoremap <buffer> <ESC> :call wwws#conn#Close()<CR>
+	nnoremap <buffer> <C-R> :call wwws#conn#TryConnect()<CR>
+	nnoremap <buffer> <del> :call wwws#buffer#SendDeleteParagraph()<CR>
+	nnoremap <buffer> <C-S-H> :call wwws#buffer#SendHeadless()<CR>
+	nnoremap <buffer> <C-S-BS> :call wwws#buffer#SendDeleteHeadless()<CR>
 endif

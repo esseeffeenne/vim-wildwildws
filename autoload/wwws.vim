@@ -32,6 +32,7 @@ func! wwws#OpenNew(...)
 	exe openMethod . ' ' . name . '.wwws'
 
 	call append(0, 'URI: ' . uri)
+	let b:_headersSize = 1
 
 	set nomodified
 
@@ -63,6 +64,7 @@ func! wwws#_getParams() " {{{
 			let params['uri'] = s:formatUri(value)
 		else
 			let headers[name] = value
+			b:_headersSize = b:_headersSize + 1
 		endif
 	endfor
 

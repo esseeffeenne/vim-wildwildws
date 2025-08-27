@@ -73,6 +73,7 @@ func! wwws#conn#Open() " {{{
 				\ }
 	let job = (has('nvim') ? jobstart(cmd, args) : job_start(cmd, args))
 	let b:_wwws['job'] = job
+	call s:appendOutput(['', '// Connected'])
 endfunc " }}}
 
 func! wwws#conn#CloseFor(inputBufNr)
@@ -113,7 +114,7 @@ func! wwws#conn#Send(message) " {{{
 	endif
 
 	if has('nvim')
-		call chansend(job, [ a:message, "\n" ])
+		call chansend(job, split(a:message, '\n'))
 	else
 		call ch_sendraw(job, a:message . "\n")
 	endif

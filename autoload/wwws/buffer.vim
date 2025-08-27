@@ -1,5 +1,4 @@
-
-func! wwws#buffer#SendParagraph()
+func! wwws#buffer#_SendWrapper(motion)
 	let reg = '"'
 
 	let cursor = getcurpos()
@@ -11,7 +10,7 @@ func! wwws#buffer#SendParagraph()
 	let reg_type = getregtype(reg)
 
 	" select the paragraph and get its text
-	silent exe 'normal! "' . reg . 'GVggy'
+	silent exe 'normal! "' . reg . a:motion
 	let toSend = getreg(reg)
 
 	" restore settings
@@ -23,3 +22,24 @@ func! wwws#buffer#SendParagraph()
 	" send the value
 	call wwws#conn#Send(toSend)
 endfunc
+
+func! wwws#buffer#SendParagraph()
+	call wwws#buffer#_SendWrapper('GVggy')
+endfunc
+
+func! wwws#buffer#SendLine()
+	call wwws#buffer#_SendWrapper('yy')
+endfunc
+
+func! wwws#buffer#SendDeleteParagraph()
+	call wwws#buffer#_SendWrapper('GVggd')
+endfunc
+
+func! wwws#buffer#SendHeadless()
+	call wwws#buffer#_SendWrapper('GVgg' . b:_headersSize . 'jy')
+endfunc
+
+func! wwws#buffer#SendDeleteHeadless()
+	call wwws#buffer#_SendWrapper('GVgg' . b:_headersSize . 'jd')
+endfunc
+
