@@ -27,11 +27,11 @@ func! wwws#conn#Open() " {{{
     call wwws#output#EnsureAvailable()
 
     if !s:isReady()
-        " not ready yet
+        echo 'Not ready yet'
         return
     endif
 
-    if type(get(b:_wwws, 'job', 0)) == v:t_job
+    if type(get(b:_wwws, 'job', 'no job')) == v:t_number
         echo 'Already connected'
         return
     endif
@@ -61,7 +61,7 @@ func! wwws#conn#Open() " {{{
         call wwws#conn#Close()
     endfunc
 
-    let job = job_start(cmd, {
+    let job = jobstart(cmd, {
         \ 'out_mode': 'nl',
         \ 'out_modifiable': 0,
         \ 'out_io': 'buffer',
@@ -78,12 +78,12 @@ endfunc " }}}
 func! wwws#conn#CloseFor(inputBufNr)
     " disconnect; leave the output buffer open
     let _wwws = getbufvar(a:inputBufNr, '_wwws', {})
-    let job = get(_wwws, 'job', 0)
-    if type(job) != v:t_job
+    let job = get(_wwws, 'job', 'no job')
+    if type(job) != v:t_number
         return
     endif
 
-    call job_stop(job)
+    call jobstop(job)
     unlet _wwws['job']
 endfunc
 
@@ -102,13 +102,13 @@ func! wwws#conn#Send(message) " {{{
     " always try to reconnect if disconnected when sending
     call wwws#conn#TryConnect()
 
-    let job = get(b:_wwws, 'job', 0)
-    if type(job) != v:t_job
+    let job = get(b:_wwws, 'job', 'no job')
+    if type(job) != v:t_number
         echo 'Not connected'
         return
     endif
 
-    call ch_sendraw(job, a:message . "\n")
+    call chansend(job, [ a:message, "\n" ])
 endfunc " }}}
 
 func! wwws#conn#TryConnect() " {{{
@@ -121,7 +121,7 @@ func! wwws#conn#TryConnect() " {{{
         return
     endif
 
-    if type(get(b:_wwws, 'job', 0)) == v:t_job
+    if type(get(b:_wwws, 'job', 'no job')) == v:t_number
         " already connected
         return
     endif
@@ -148,4 +148,5 @@ func! wwws#conn#_closed() " {{{
         endtry
     endif
 endfunc " }}}
+
 
