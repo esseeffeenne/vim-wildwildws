@@ -7,9 +7,7 @@ if exists('b:current_syntax')
   finish
 endif
 
-" just highlight like javascript for now
-runtime! syntax/javascript.vim
+" no syntax is better than a wrong syntax
 
 let b:current_syntax = 'wwws'
-
 
