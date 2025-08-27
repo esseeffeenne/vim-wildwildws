@@ -2,13 +2,13 @@
 " Only init once
 if get(b:, 'wwws_init', 0)
 
-    " but if we re-open with :e, for example, we might
-    " want to try to reconnect
-    if g:wwws_auto_connect
-        call wwws#conn#TryConnect()
-    endif
+	" but if we re-open with :e, for example, we might
+	" want to try to reconnect
+	if g:wwws_auto_connect
+		call wwws#conn#TryConnect()
+	endif
 
-    finish
+	finish
 endif
 let b:wwws_init = 1
 
@@ -26,17 +26,17 @@ call wwws#output#EnsureAvailable()
 " ======= Final wwws buffer configs ========================
 
 augroup WWWS
-    autocmd! * <buffer>
-    autocmd BufHidden <buffer> :call wwws#conn#_closed()
-    autocmd BufDelete <buffer> :call wwws#conn#_closed()
-    autocmd BufWritePost <buffer> :call wwws#conn#TryConnect()
+	autocmd! * <buffer>
+	autocmd BufHidden <buffer> :call wwws#conn#_closed()
+	autocmd BufDelete <buffer> :call wwws#conn#_closed()
+	autocmd BufWritePost <buffer> :call wwws#conn#TryConnect()
 augroup END
 
 if g:wwws_auto_connect
-    call wwws#conn#Open()
+	call wwws#conn#Open()
 endif
 
 if g:wwws_create_maps
-    nnoremap <buffer> <cr> :call wwws#buffer#SendParagraph()<cr>
-    nnoremap <buffer> <del> :call wwws#buffer#Close()<del>
+	nnoremap <buffer> <cr> :call wwws#buffer#SendParagraph()<cr>
+	nnoremap <buffer> <del> :call wwws#buffer#Close()<del>
 endif

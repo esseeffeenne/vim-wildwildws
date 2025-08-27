@@ -2,7 +2,7 @@
 " Description: Main entry point for the plugin: sets up settings, etc.
 
 if exists('g:loaded_wildwildws')
-    finish
+	finish
 endif
 let g:loaded_wildwildws = 1
 

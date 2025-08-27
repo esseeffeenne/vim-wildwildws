@@ -4,7 +4,7 @@
 " Latest Revision: 24 April 2018
 
 if exists('b:current_syntax')
-  finish
+	finish
 endif
 
 " no syntax is better than a wrong syntax
