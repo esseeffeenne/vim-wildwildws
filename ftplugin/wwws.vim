@@ -38,4 +38,5 @@ endif
 
 if g:wwws_create_maps
     nnoremap <buffer> <cr> :call wwws#buffer#SendParagraph()<cr>
+    nnoremap <buffer> <del> :call wwws#buffer#Close()<del>
 endif
