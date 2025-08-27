@@ -11,7 +11,7 @@ func! wwws#buffer#SendParagraph()
     let reg_type = getregtype(reg)
 
     " select the paragraph and get its text
-    silent exe 'normal! "' . reg . 'yap'
+    silent exe 'normal! "' . reg . 'GVggy'
     let toSend = getreg(reg)
 
     " restore settings
